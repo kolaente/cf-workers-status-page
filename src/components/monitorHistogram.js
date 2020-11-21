@@ -16,14 +16,23 @@ export default function MonitorHistogram({ monitorId, kvMonitor }) {
         let bg = ''
         let dayInHistogramLabel = config.settings.dayInHistogramNoData
 
-        // filter all dates before first check, check the rest
-        if (kvMonitor && kvMonitor.firstCheck <= dayInHistogram) {
-          if (!kvMonitor.failedDays.includes(dayInHistogram)) {
+        // filter all dates before first check or collectResponseTimes is true, then check the rest
+        if (
+          kvMonitor &&
+          (config.settings.collectResponseTimes ||
+            kvMonitor.firstCheck <= dayInHistogram)
+        ) {
+          if (
+            (kvMonitor.checks.hasOwnProperty(dayInHistogram) &&
+              !kvMonitor.checks[dayInHistogram].fails > 0) ||
+            (!config.settings.collectResponseTimes &&
+              !kvMonitor.checks.hasOwnProperty(dayInHistogram))
+          ) {
             bg = 'green'
             dayInHistogramLabel = config.settings.dayInHistogramOperational
           } else {
             bg = 'yellow'
-            dayInHistogramLabel = config.settings.dayInHistogramNotOperational
+            dayInHistogramLabel = `${kvMonitor.checks[dayInHistogram].fails} ${config.settings.dayInHistogramNotOperational}`
           }
         }
 

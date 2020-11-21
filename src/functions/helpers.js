@@ -1,16 +1,16 @@
 import config from '../../config.yaml'
 import { useEffect, useState } from 'react'
 
-export async function getMonitors() {
-  return await getKVWithMetadata('monitors_data', 'json')
+export async function getKVMonitors() {
+  return KV_STATUS_PAGE.get('monitors_data_v1_1', 'json')
+}
+
+export async function setKVMonitors(data) {
+  return setKV('monitors_data_v1_1', JSON.stringify(data))
 }
 
 export async function setKV(key, value, metadata, expirationTtl) {
   return KV_STATUS_PAGE.put(key, value, { metadata, expirationTtl })
-}
-
-export async function getKVWithMetadata(key, type = 'text') {
-  return KV_STATUS_PAGE.getWithMetadata(key, type)
 }
 
 export async function notifySlack(monitor, operational) {
@@ -23,10 +23,11 @@ export async function notifySlack(monitor, operational) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `Monitor *${monitor.name}* changed status to *${operational
+              text: `Monitor *${monitor.name}* changed status to *${
+                operational
                   ? config.settings.monitorLabelOperational
                   : config.settings.monitorLabelNotOperational
-                }*`,
+              }*`,
             },
           },
           {
@@ -34,9 +35,11 @@ export async function notifySlack(monitor, operational) {
             elements: [
               {
                 type: 'mrkdwn',
-                text: `${operational ? ':white_check_mark:' : ':x:'} \`${monitor.method ? monitor.method : 'GET'
-                  } ${monitor.url}\` - :eyes: <${config.settings.url
-                  }|Status Page>`,
+                text: `${operational ? ':white_check_mark:' : ':x:'} \`${
+                  monitor.method ? monitor.method : 'GET'
+                } ${monitor.url}\` - :eyes: <${
+                  config.settings.url
+                }|Status Page>`,
               },
             ],
           },
@@ -77,4 +80,11 @@ export function useKeyPress(targetKey) {
   }, [])
 
   return keyPressed
+}
+
+export async function getCheckLocation() {
+  const res = await fetch('https://cloudflare-dns.com/dns-query', {
+    method: 'OPTIONS',
+  })
+  return res.headers.get('cf-ray').split('-')[1]
 }
