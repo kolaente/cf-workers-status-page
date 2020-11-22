@@ -4,6 +4,7 @@ import {
   setKV,
   getKVWithMetadata,
   notifySlack,
+  notifyTelegram,
 } from './helpers'
 
 function getDate() {
@@ -48,6 +49,13 @@ export async function processCronTrigger(event) {
     // Send Slack message on monitor change
     if (monitorsState[monitor.id].operational !== monitorOperational && typeof SECRET_SLACK_WEBHOOK_URL !== 'undefined' && SECRET_SLACK_WEBHOOK_URL !== 'default-gh-action-secret') {
         event.waitUntil(notifySlack(monitor, monitorOperational))
+    }
+
+    // Send Telegram message on monitor change
+    if (monitorsState[monitor.id].operational !== monitorOperational
+        && typeof SECRET_TELEGRAM_API_TOKEN !== 'undefined' && SECRET_TELEGRAM_API_TOKEN !== 'default-gh-action-secret'
+        && typeof SECRET_TELEGRAM_CHAT_ID !== 'undefined' && SECRET_TELEGRAM_CHAT_ID !== 'default-gh-action-secret') {
+        event.waitUntil(notifyTelegram(monitor, monitorOperational))
     }
 
     monitorsState[monitor.id].operational = checkResponse.status === (monitor.expectStatus || 200)
