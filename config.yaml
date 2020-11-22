@@ -28,7 +28,7 @@ monitors:
     followRedirect: false
   - id: guanako
     name: guanako.kolaente.de
-    url: 'https://guanako.kolaente.de/'
+    url: 'https://guanako.kolaente.de/health'
     method: GET
     expectStatus: 200
     followRedirect: false
