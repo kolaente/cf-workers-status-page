@@ -51,6 +51,13 @@ export async function processCronTrigger(event) {
         event.waitUntil(notifySlack(monitor, monitorOperational))
     }
 
+    // Send Telegram message on monitor change
+    if (monitorsState[monitor.id].operational !== monitorOperational
+        && typeof SECRET_TELEGRAM_API_TOKEN !== 'undefined' && SECRET_TELEGRAM_API_TOKEN !== 'default-gh-action-secret'
+        && typeof SECRET_TELEGRAM_CHAT_ID !== 'undefined' && SECRET_TELEGRAM_CHAT_ID !== 'default-gh-action-secret') {
+        event.waitUntil(notifyTelegram(monitor, monitorOperational))
+    }
+
     monitorsState[monitor.id].operational = checkResponse.status === (monitor.expectStatus || 200)
     monitorsState[monitor.id].firstCheck = monitorsState[monitor.id].firstCheck || getDate()
 
@@ -78,14 +85,6 @@ export async function processCronTrigger(event) {
 
   // Save monitorsState and monitorsStateMetadata to KV storage
   await setKV('monitors_data', JSON.stringify(monitorsState), monitorsStateMetadata)
-
-    // Send Telegram message on monitor change
-    if (monitorsState[monitor.id].operational !== monitorOperational
-        && typeof SECRET_TELEGRAM_API_TOKEN !== 'undefined' && SECRET_TELEGRAM_API_TOKEN !== 'default-gh-action-secret'
-        && typeof SECRET_TELEGRAM_CHAT_ID !== 'undefined' && SECRET_TELEGRAM_CHAT_ID !== 'default-gh-action-secret') {
-        event.waitUntil(notifyTelegram(monitor, monitorOperational))
-      return new Response('sent telegram notification')
-    }
 
   return new Response('OK')
 }
