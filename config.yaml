@@ -34,10 +34,3 @@ monitors:
     url: 'https://blog.cloudflare.com/'
     method: GET
     expectStatus: 200
-
-  - id: test-domain
-    name: Test
-    url: 'https://alpaca.kolaente.de/health'
-    method: GET
-    expectStatus: 200
-
