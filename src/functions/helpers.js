@@ -62,11 +62,11 @@ export async function notifyTelegram(monitor, operational) {
   Monitor *${monitor.name}* changed status to *${getOperationalLabel(operational)}*`
 
   const payload = new FormData()
-  payload.append('chat_id', TELEGRAM_CHAT_ID)
+  payload.append('chat_id', SECRET_TELEGRAM_CHAT_ID)
   payload.append('parse_mode', 'MarkdownV2')
   payload.append('text', text)
 
-  const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_API_TOKEN}/sendMessage`
+  const telegramUrl = `https://api.telegram.org/bot${SECRET_TELEGRAM_API_TOKEN}/sendMessage`
   return fetch(telegramUrl, {
     body: payload,
     method: 'POST',
