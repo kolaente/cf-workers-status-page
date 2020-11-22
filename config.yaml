@@ -1,6 +1,6 @@
 settings:
   title: 'Status Page'
-  url: 'https://status-page.eidam.dev' # used for Slack messages
+  url: 'https://cf-workers-status-page-production.kolaente.workers.dev/' # used for Slack messages
   logo: logo-192x192.png # image in ./public/ folder
   daysInHistogram: 90 # number of days you want to display in histogram
 
@@ -14,23 +14,46 @@ settings:
   dayInHistogramNotOperational: 'Some checks failed'
 
 monitors:
-  - id: workers-cloudflare-com # unique identifier
-    name: workers.cloudflare.com
-    description: 'You write code. They handle the rest.' # default=empty
-    url: 'https://workers.cloudflare.com/' # URL to fetch
-    method: GET # default=GET
-    expectStatus: 200 # operational status, default=200
-    followRedirect: false # should fetch follow redirects, default=false
-
-  - id: www-cloudflare-com
-    name: www.cloudflare.com
-    description: 'Built for anything connected to the Internet.'
-    url: 'https://www.cloudflare.com'
+  - id: alpaca
+    name: alpaca.kolaente.de
+    url: 'https://alpaca.kolaente.de/health'
     method: GET
     expectStatus: 200
-
-  - id: blog-cloudflare-com
-    name: The Cloudflare Blog
-    url: 'https://blog.cloudflare.com/'
+    followRedirect: false
+  - id: cama
+    name: cama.kolaente.de
+    url: 'https://cama.kolaente.de/health'
     method: GET
     expectStatus: 200
+    followRedirect: false
+  - id: guanako
+    name: guanako.kolaente.de
+    url: 'https://guanako.kolaente.de/'
+    method: GET
+    expectStatus: 200
+    followRedirect: false
+  - id: kolaente.dev
+    name: kolaente.dev
+    url: 'https://kolaente.dev/'
+    method: GET
+    expectStatus: 200
+    followRedirect: false
+  - id: vikunjacloud
+    name: 'Vikunja Cloud'
+    url: 'https://my.vikunja.cloud/'
+    method: GET
+    expectStatus: 200
+    followRedirect: false
+  - id: vikunja-home
+    name: 'Vikunja Homepage'
+    url: 'https://vikunja.io/'
+    method: GET
+    expectStatus: 200
+    followRedirect: false
+  - id: mail
+    name: 'Mailcow'
+    url: 'https://mail.kolaente.de/'
+    method: GET
+    expectStatus: 200
+    followRedirect: false
+
