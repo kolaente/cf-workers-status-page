@@ -61,6 +61,8 @@ export async function notifyTelegram(monitor, operational) {
   \`${monitor.method ? monitor.method : "GET"} ${monitor.url}\` - 👀 <${config.settings.url}|Status Page>
   Monitor *${monitor.name}* changed status to *${getOperationalLabel(operational)}*`
 
+  console.log('Notifying telegram with message', text)
+  
   const payload = new FormData()
   payload.append('chat_id', TELEGRAM_CHAT_ID)
   payload.append('parse_mode', 'MarkdownV2')
