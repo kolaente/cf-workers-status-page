@@ -57,9 +57,10 @@ export async function notifySlack(monitor, operational) {
 }
 
 export async function notifyTelegram(monitor, operational) {
-  const text = `${operational ? '✅' : '❌'}
-  \`${monitor.method ? monitor.method : "GET"} ${monitor.url}\` - 👀 <${config.settings.url}|Status Page>
-  Monitor *${monitor.name}* changed status to *${getOperationalLabel(operational)}*`
+  const text = `Monitor *${monitor.name.replace('-', '\\-')}* changed status to *${getOperationalLabel(operational)}*
+  ${operational ? '✅' : '❌'} \`${monitor.method ? monitor.method : "GET"} ${monitor.url}\` \\- 👀 [Status Page](${config.settings.url})`
+
+  console.log('sending telegram with message', text)
 
   const payload = new FormData()
   payload.append('chat_id', SECRET_TELEGRAM_CHAT_ID)
