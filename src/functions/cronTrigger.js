@@ -56,8 +56,6 @@ export async function processCronTrigger(event) {
         && typeof SECRET_TELEGRAM_API_TOKEN !== 'undefined' && SECRET_TELEGRAM_API_TOKEN !== 'default-gh-action-secret'
         && typeof SECRET_TELEGRAM_CHAT_ID !== 'undefined' && SECRET_TELEGRAM_CHAT_ID !== 'default-gh-action-secret') {
         event.waitUntil(notifyTelegram(monitor, monitorOperational))
-    } else {
-      console.log('Not notifying telegram')
     }
 
     monitorsState[monitor.id].operational = checkResponse.status === (monitor.expectStatus || 200)
