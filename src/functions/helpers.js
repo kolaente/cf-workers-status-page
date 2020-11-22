@@ -1,6 +1,12 @@
 import config from '../../config.yaml'
 import {useEffect, useState} from 'react'
 
+const getOperationalLabel = operational => {
+  return operational
+    ? config.settings.monitorLabelOperational
+    : config.settings.monitorLabelNotOperational
+}
+
 export async function getMonitors() {
   return await getKVWithMetadata('monitors_data', "json")
 }
@@ -23,11 +29,7 @@ export async function notifySlack(monitor, operational) {
             type: 'section',
             text: {
               type: 'mrkdwn',
-              text: `Monitor *${monitor.name}* changed status to *${
-                operational
-                  ? config.settings.monitorLabelOperational
-                  : config.settings.monitorLabelNotOperational
-              }*`,
+              text: `Monitor *${monitor.name}* changed status to *${getOperationalLabel(operational)}*`,
             },
           },
           {
@@ -51,6 +53,23 @@ export async function notifySlack(monitor, operational) {
     body: JSON.stringify(payload),
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
+  })
+}
+
+export async function notifyTelegram(monitor, operational) {
+  const text = `${operational ? '✅' : '❌'}
+  \`${monitor.method ? monitor.method : "GET"} ${monitor.url}\` - 👀 <${config.settings.url}|Status Page>
+  Monitor *${monitor.name}* changed status to *${getOperationalLabel(operational)}*`
+
+  const payload = new FormData()
+  payload.append('chat_id', TELEGRAM_CHAT_ID)
+  payload.append('parse_mode', 'MarkdownV2')
+  payload.append('text', text)
+
+  const telegramUrl = `https://api.telegram.org/bot${TELEGRAM_API_TOKEN}/sendMessage`
+  return fetch(telegramUrl, {
+    body: payload,
+    method: 'POST',
   })
 }
 
